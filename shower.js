@@ -933,6 +933,30 @@ window.shower = window.shower || (function(window, document, undefined) {
 		}
 	}, false);
 
+	document.addEventListener('mousewheel', function (e) {
+		var body = document.querySelector('body'),
+			slideNumber = shower.getSlideNumber(shower._getSlideIdByEl(e.target)),
+			lockedWheel = body.getAttribute('data-scroll') === 'locked',
+			nextSlide;
+
+		if (!lockedWheel) {
+			body.setAttribute('data-scroll', 'locked');
+
+			if (e.wheelDeltaY > 0) {
+				nextSlide = slideNumber - 1;
+			} else {
+				nextSlide = slideNumber + 1;
+			}
+
+			shower.go(nextSlide);
+			shower.enterSlideMode();
+
+			setTimeout(function () {
+				body.setAttribute('data-scroll', 'unlocked');
+			}, 200);
+		}
+	}, false);
+
 	document.addEventListener('touchstart', function(e) {
 		var slideNumber = shower.getSlideNumber(shower._getSlideIdByEl(e.target)),
 			slide,
