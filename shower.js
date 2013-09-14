@@ -893,8 +893,11 @@ window.shower = window.shower || (function(window, document, undefined) {
 
 	shower.init();
 
-	document.addEventListener('click', function(e) {
-		var slideNumber = shower.getSlideNumber(shower._getSlideIdByEl(e.target)),
+	document.addEventListener('click', function (e) {
+		var currentSection,
+			element = e.target,
+			slideNumber = shower.getSlideNumber(shower._getSlideIdByEl(e.target)),
+			nextSlide,
 			slide;
 
 		// Click on slide in List mode
@@ -909,6 +912,24 @@ window.shower = window.shower || (function(window, document, undefined) {
 			if (slide.timing) {
 				slide.initTimer(shower);
 			}
+		} else {
+			while (element.nodeName != 'SECTION') {
+				element = element.parentElement;
+
+				if (element.nodeName == 'BODY') {
+					return false;
+				}
+			}
+			currentSection = element;
+
+			if (e.x < parseInt(currentSection.offsetWidth, 10) / 2) {
+				nextSlide = slideNumber - 1;
+			} else {
+				nextSlide = slideNumber + 1;
+			}
+
+			shower.go(nextSlide);
+			shower.enterSlideMode();
 		}
 	}, false);
 
